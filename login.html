@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>MotoTrap — Login</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="login-body">
+  <main class="login-wrapper">
+    <section class="login-card card">
+      <div class="brand-center">
+        <img src="Logo.png" alt="MotoTrap" class="logo lg"/>
+        <h1>MotoTrap</h1>
+        <p class="muted">Controle seus ganhos como motorista de app</p>
+      </div>
+
+      <div class="tabs-auth">
+        <button class="tab-auth active" data-auth="login">Entrar</button>
+        <button class="tab-auth" data-auth="register">Criar conta</button>
+      </div>
+
+      <section id="auth-login" class="auth-pane visible">
+        <form id="loginForm" class="form">
+          <label>
+            <span>E-mail</span>
+            <input type="email" id="loginUser" autocomplete="username" inputmode="email" required />
+          </label>
+          <label>
+            <span>Senha</span>
+            <input type="password" id="loginPass" autocomplete="current-password" required />
+          </label>
+          <label class="small">
+            <input type="checkbox" id="rememberMe" /> Manter conectado neste dispositivo
+          </label>
+          <button class="btn primary full big" type="submit">Entrar</button>
+          <button id="btnReset" type="button" class="btn full" style="margin-top:6px">Esqueci a senha</button>
+        </form>
+      </section>
+
+      <section id="auth-register" class="auth-pane">
+        <form id="registerForm" class="form">
+          <label>
+            <span>E-mail</span>
+            <input type="email" id="regUser" required />
+          </label>
+          <label>
+            <span>Senha</span>
+            <input type="password" id="regPass" required />
+          </label>
+          <p class="small muted">Seus dados ficam salvos neste dispositivo e, com Sync ativo, também no Firestore.</p>
+          <button class="btn success full big" type="submit">Criar conta</button>
+        </form>
+      </section>
+
+      <footer class="login-footer">
+        <span>© <span id="year"></span> MotoTrap</span>
+      </footer>
+    </section>
+  </main>
+
+  <!-- Firebase SDKs (Compat) para autenticação -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js"></script>
+  <script>
+    const firebaseConfig = {"apiKey": "AIzaSyAMKbphUhMV7a1OMqjebbwQzRKttdGMgFc", "authDomain": "mototrap-930a0.firebaseapp.com", "projectId": "mototrap-930a0", "storageBucket": "mototrap-930a0.firebasestorage.app", "messagingSenderId": "404418752322", "appId": "1:404418752322:web:e4ffad63a0c882e54f22db"};
+    if (!firebase.apps || firebase.apps.length === 0) { firebase.initializeApp(firebaseConfig); }
+  </script>
+
+  <script src="login.js"></script>
+</body>
+</html>
