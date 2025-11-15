@@ -123,3 +123,18 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   refreshAll();
   if(getData().settings.sync?.enabled){ await pullAll(); }
 });
+window.addEventListener('DOMContentLoaded', () => {
+  const sess = JSON.parse(localStorage.getItem('mototrap_session'));
+  const users = JSON.parse(localStorage.getItem('mototrap_users') || '{}');
+  const user = users[sess?.username];
+
+  // Oculta a aba Config e o conteúdo da tela se não for administrador
+  if (!user?.admin) {
+    const configTabBtn = document.querySelector('[data-tab="config"]');
+    if (configTabBtn) configTabBtn.style.display = "none";
+
+    const configTabContent = document.getElementById('tab-config');
+    if (configTabContent) configTabContent.style.display = "none";
+  }
+});
+
