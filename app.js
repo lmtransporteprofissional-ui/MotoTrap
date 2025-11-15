@@ -74,7 +74,7 @@ function stopJornada() {
   localStorage.setItem('mototrap_work_history', JSON.stringify(workHistory));
 
   updateWorkTable();
-  updateWorkChart();
+  updateEarnExpenseChart();
   updateResumo();
 
   localStorage.removeItem(WORK_TIMER_STARTED);
@@ -93,7 +93,7 @@ onReady(() => {
   btnStop.addEventListener('click', stopJornada);
 
   updateWorkTable();
-  updateWorkChart();
+  updateEarnExpenseChart();
   updateResumo();
   updateEarnTable();
   updateExpTable();
@@ -131,7 +131,7 @@ function updateWorkTable() {
   document.getElementById('avgHours').textContent = (workHistory.length ? (totalHours / workHistory.length).toFixed(1) : "0");
 
   updateResumo();
-  updateWorkChart();
+  updateEarnExpenseChart();
 }
 
 window.editKm = function(idx, value) {
@@ -149,37 +149,67 @@ window.removeWork = function(idx) {
 };
 
 
-// ===== GRÁFICO DE HORAS TRABALHADAS =====
-function updateWorkChart() {
+// ===== GRÁFICO DE GANHOS X DESPESAS =====
+function updateEarnExpenseChart() {
   const canvas = document.getElementById('chartCanvas');
   if (!canvas) return;
+
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  let workHistory = JSON.parse(localStorage.getItem('mototrap_work_history') || '[]');
-  if (workHistory.length === 0) return;
+  let earns = JSON.parse(localStorage.getItem('mototrap_earns') || '[]');
+  let exps  = JSON.parse(localStorage.getItem('mototrap_exps') || '[]');
 
-  const w = canvas.width, h = canvas.height;
-  const barWidth = Math.max(10, Math.floor(w/workHistory.length));
-  const maxHours = Math.max(...workHistory.map(e => e.hours));
-  ctx.font = "12px Arial";
-
-  workHistory.forEach((entry, i) => {
-    const x = i * barWidth + 30;
-    const y = h - (entry.hours/(maxHours||1)) * (h-40);
-    ctx.fillStyle = "#2986cc";
-    ctx.fillRect(x, y, barWidth-4, h-y-20);
-    ctx.fillStyle = "#000";
-    ctx.textAlign = "center";
-    ctx.fillText(entry.hours + "h", x + barWidth/2 - 2, y - 4);
-    ctx.fillText(entry.date, x + barWidth/2 - 2, h - 5);
+  // Agrupar por data (formato YYYY-MM-DD)
+  let days = {};
+  earns.forEach(e => {
+    days[e.date] = days[e.date] || {gain: 0, exp: 0};
+    days[e.date].gain += Number(e.amount || 0);
+  });
+  exps.forEach(e => {
+    days[e.date] = days[e.date] || {gain: 0, exp: 0};
+    days[e.date].exp += Number(e.amount || 0);
   });
 
+  // Ordena datas
+  const dates = Object.keys(days).sort();
+
+  // Limites para o gráfico
+  const w = canvas.width, h = canvas.height;
+  const barGroupWidth = Math.max(20, Math.floor((w-40)/(dates.length || 1)));
+  // Define altura máxima baseada no maior valor
+  const maxVal = Math.max(...dates.map(d => Math.max(days[d].gain, days[d].exp)), 1);
+
+  ctx.font = "12px Arial";
+  ctx.textAlign = "center";
+
+  // Desenha cada grupo de barras
+  dates.forEach((date, i) => {
+    const x = 30 + i * barGroupWidth;
+    // Ganho: barra azul
+    const gainHeight = (days[date].gain / maxVal) * (h - 40);
+    ctx.fillStyle = "#2986cc";
+    ctx.fillRect(x, h - gainHeight - 20, (barGroupWidth/2)-2, gainHeight);
+    ctx.fillText("R$"+days[date].gain.toFixed(2), x + (barGroupWidth/4), h - gainHeight - 24);
+    // Despesa: barra vermelha
+    const expHeight = (days[date].exp / maxVal) * (h - 40);
+    ctx.fillStyle = "#d9534f";
+    ctx.fillRect(x + (barGroupWidth/2), h - expHeight - 20, (barGroupWidth/2)-2, expHeight);
+    ctx.fillText("R$"+days[date].exp.toFixed(2), x + (3*barGroupWidth/4), h - expHeight - 24);
+
+    // Labels das datas
+    ctx.fillStyle = "#333";
+    ctx.fillText(date, x + barGroupWidth/2, h - 5);
+  });
+
+  // Eixo Y
   ctx.textAlign = "right";
-  ctx.fillText("Horas", 25, 13);
+  ctx.fillStyle = "#000";
+  ctx.fillText("Valores diários em R$", 60, 14);
 }
 
-window.addEventListener('resize', updateWorkChart);
+window.addEventListener('resize', updateEarnExpenseChart);
+
 
 // ===== GANHOS =====
 function updateEarnTable() {
@@ -200,6 +230,7 @@ function updateEarnTable() {
   });
   document.getElementById('earnTotal').textContent = "R$ " + total.toFixed(2);
   updateResumo();
+  updateEarnExpenseChart();
 }
 
 window.removeEarn = function(idx) {
@@ -207,6 +238,7 @@ window.removeEarn = function(idx) {
   earns.splice(idx,1);
   localStorage.setItem('mototrap_earns', JSON.stringify(earns));
   updateEarnTable();
+  updateEarnExpenseChart();
 };
 
 onReady(() => {
@@ -222,6 +254,7 @@ onReady(() => {
     this.reset();
     updateEarnTable();
     updateResumo();
+    updateEarnExpenseChart();
   });
 });
 
@@ -244,6 +277,7 @@ function updateExpTable() {
   });
   document.getElementById('expTotal').textContent = "R$ " + total.toFixed(2);
   updateResumo();
+  updateEarnExpenseChart();
 }
 
 window.removeExp = function(idx) {
@@ -251,6 +285,7 @@ window.removeExp = function(idx) {
   exps.splice(idx,1);
   localStorage.setItem('mototrap_exps', JSON.stringify(exps));
   updateExpTable();
+  updateEarnExpenseChart();
 };
 
 onReady(() => {
@@ -266,14 +301,15 @@ onReady(() => {
     this.reset();
     updateExpTable();
     updateResumo();
+    updateEarnExpenseChart();
   });
 });
 
 // ===== METAS (SALVA E EXIBE) =====
 function updateGoals() {
   let metas = JSON.parse(localStorage.getItem('mototrap_goals') || '{}');
-  // Exibir metas ao vivo? Exemplo para metas diárias
-  document.getElementById('goalsLive').textContent = `Meta diária - Ganhos: R$ ${metas.gDailyEarn||'0'} | KM: ${metas.gDailyKm||'0'} | Horas: ${metas.gDailyHours||'0'}`;
+  document.getElementById('goalsLive').textContent =
+    `Meta diária - Ganhos: R$ ${metas.gDailyEarn||'0'} | KM: ${metas.gDailyKm||'0'} | Horas: ${metas.gDailyHours||'0'}`;
 }
 
 onReady(() => {
