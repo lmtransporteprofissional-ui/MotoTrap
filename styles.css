@@ -13,6 +13,12 @@ header.app-header {
   display: flex;
   align-items: center;
 }
+/* LOGO menor */
+.brand img {
+  height: 34px;        /* ajuste aqui conforme necessário */
+  width: auto;
+  max-width: 100px;    /* previne logos largas demais */
+}
 .brand h1 {
   margin-left: 12px;
   font-weight: 700;
