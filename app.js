@@ -63,13 +63,19 @@ function stopJornada() {
 
   const ended = Date.now();
   const elapsedMs = ended - started;
-  const elapsedHours = Math.round((elapsedMs / 360000) / 10);
+
+  // Calcula horas e minutos
+  const elapsedMinutes = Math.floor(elapsedMs / 60000);
+  const hours = Math.floor(elapsedMinutes / 60);
+  const minutes = elapsedMinutes % 60;
+  const elapsedFormatted = `${hours}h ${minutes}m`;
 
   let workHistory = JSON.parse(localStorage.getItem('mototrap_work_history') || '[]');
   workHistory.push({
     date: new Date(started).toISOString().slice(0,10),
     km: 0,
-    hours: elapsedHours
+    hours: elapsedFormatted,
+    totalMinutes: elapsedMinutes // salva minutos para cálculo da média
   });
   localStorage.setItem('mototrap_work_history', JSON.stringify(workHistory));
 
@@ -101,17 +107,16 @@ onReady(() => {
   updateRodapeAno();
 });
 
-
 // ===== TABELA DE HORAS TRABALHADAS =====
 function updateWorkTable() {
   let workHistory = JSON.parse(localStorage.getItem('mototrap_work_history') || '[]');
   const tbody = document.querySelector('#workTable tbody');
   tbody.innerHTML = '';
-  let totalKm = 0, totalHours = 0;
+  let totalKm = 0, totalMinutes = 0;
 
   workHistory.forEach((entry, idx) => {
     totalKm += Number(entry.km);
-    totalHours += Number(entry.hours);
+    totalMinutes += Number(entry.totalMinutes);
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -127,8 +132,17 @@ function updateWorkTable() {
     tbody.appendChild(tr);
   });
 
+  // Calcula média de horas e minutos
+  let avgHours = "0h 0m";
+  if (workHistory.length) {
+    const avgMinutes = Math.floor(totalMinutes / workHistory.length);
+    const h = Math.floor(avgMinutes / 60);
+    const m = avgMinutes % 60;
+    avgHours = `${h}h ${m}m`;
+  }
+
   document.getElementById('avgKm').textContent = (workHistory.length ? (totalKm / workHistory.length).toFixed(1) : "0");
-  document.getElementById('avgHours').textContent = (workHistory.length ? (totalHours / workHistory.length).toFixed(1) : "0");
+  document.getElementById('avgHours').textContent = avgHours;
 
   updateResumo();
   updateEarnExpenseChart();
@@ -147,69 +161,6 @@ window.removeWork = function(idx) {
   localStorage.setItem('mototrap_work_history', JSON.stringify(workHistory));
   updateWorkTable();
 };
-
-
-// ===== GRÁFICO DE GANHOS X DESPESAS =====
-function updateEarnExpenseChart() {
-  const canvas = document.getElementById('chartCanvas');
-  if (!canvas) return;
-
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  let earns = JSON.parse(localStorage.getItem('mototrap_earns') || '[]');
-  let exps  = JSON.parse(localStorage.getItem('mototrap_exps') || '[]');
-
-  // Agrupar por data (formato YYYY-MM-DD)
-  let days = {};
-  earns.forEach(e => {
-    days[e.date] = days[e.date] || {gain: 0, exp: 0};
-    days[e.date].gain += Number(e.amount || 0);
-  });
-  exps.forEach(e => {
-    days[e.date] = days[e.date] || {gain: 0, exp: 0};
-    days[e.date].exp += Number(e.amount || 0);
-  });
-
-  // Ordena datas
-  const dates = Object.keys(days).sort();
-
-  // Limites para o gráfico
-  const w = canvas.width, h = canvas.height;
-  const barGroupWidth = Math.max(20, Math.floor((w-40)/(dates.length || 1)));
-  // Define altura máxima baseada no maior valor
-  const maxVal = Math.max(...dates.map(d => Math.max(days[d].gain, days[d].exp)), 1);
-
-  ctx.font = "12px Arial";
-  ctx.textAlign = "center";
-
-  // Desenha cada grupo de barras
-  dates.forEach((date, i) => {
-    const x = 30 + i * barGroupWidth;
-    // Ganho: barra azul
-    const gainHeight = (days[date].gain / maxVal) * (h - 40);
-    ctx.fillStyle = "#2986cc";
-    ctx.fillRect(x, h - gainHeight - 20, (barGroupWidth/2)-2, gainHeight);
-    ctx.fillText("R$"+days[date].gain.toFixed(2), x + (barGroupWidth/4), h - gainHeight - 24);
-    // Despesa: barra vermelha
-    const expHeight = (days[date].exp / maxVal) * (h - 40);
-    ctx.fillStyle = "#d9534f";
-    ctx.fillRect(x + (barGroupWidth/2), h - expHeight - 20, (barGroupWidth/2)-2, expHeight);
-    ctx.fillText("R$"+days[date].exp.toFixed(2), x + (3*barGroupWidth/4), h - expHeight - 24);
-
-    // Labels das datas
-    ctx.fillStyle = "#333";
-    ctx.fillText(date, x + barGroupWidth/2, h - 5);
-  });
-
-  // Eixo Y
-  ctx.textAlign = "right";
-  ctx.fillStyle = "#000";
-  ctx.fillText("Valores diários em R$", 60, 14);
-}
-
-window.addEventListener('resize', updateEarnExpenseChart);
-
 
 // ===== GANHOS =====
 function updateEarnTable() {
@@ -305,7 +256,7 @@ onReady(() => {
   });
 });
 
-// ===== METAS (SALVA E EXIBE) =====
+// ===== METAS =====
 function updateGoals() {
   let metas = JSON.parse(localStorage.getItem('mototrap_goals') || '{}');
   document.getElementById('goalsLive').textContent =
@@ -350,4 +301,3 @@ function updateRodapeAno() {
   if (yEl) yEl.textContent = new Date().getFullYear();
 }
 
-onReady(updateRodapeAno);
