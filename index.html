@@ -4,12 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>MotoTrap — Controle</title>
-  <link rel="stylesheet" href="styles.css" />
+  styles.css
 </head>
 <body>
+  <!-- HEADER -->
   <header class="app-header">
     <div class="brand">
-      <img src="Logo.png" alt="MotoTrap" class="logo"/>
+      Logo.png
       <h1>MotoTrap</h1>
     </div>
     <nav class="header-actions">
@@ -18,9 +19,10 @@
     </nav>
   </header>
 
+  <!-- MAIN -->
   <main class="view visible">
 
-    <!-- CONTADOR DE JORNADA DO DIA -->
+    <!-- CONTADOR DE JORNADA -->
     <div class="grid-1">
       <div class="card">
         <header class="card-header"><h3>Jornada do dia</h3></header>
@@ -32,14 +34,30 @@
       </div>
     </div>
 
-    <!-- TABELA DE TRABALHO (HORAS TRABALHADAS) -->
+    <!-- HORAS TRABALHADAS -->
     <div class="grid-2 responsive">
       <div class="card">
         <header class="card-header"><h3>Horas trabalhadas</h3></header>
         <table class="table" id="workTable">
-          <thead><tr><th>Data</th><th>KM</th><th>Horas</th><th>Ações</th></tr></thead>
-          <tbody></tbody>
-          <tfoot><tr><td>Médias</td><td id="avgKm">0</td><td id="avgHours">0</td><td></td></tr></tfoot>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>KM</th>
+              <th>Horas</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Linhas geradas pelo JS -->
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>Médias</td>
+              <td id="avgKm">0</td>
+              <td id="avgHours">0h 0m</td>
+              <td></td>
+            </tr>
+          </tfoot>
         </table>
       </div>
     </div>
@@ -47,9 +65,7 @@
     <!-- RESUMO RÁPIDO -->
     <div class="grid-2 responsive">
       <div class="card">
-        <header class="card-header">
-          <h3>Resumo rápido</h3>
-        </header>
+        <header class="card-header"><h3>Resumo rápido</h3></header>
         <div class="stats">
           <div class="stat">
             <span class="label">Ganhos (mês)</span>
@@ -72,10 +88,9 @@
         </div>
       </div>
 
+      <!-- GRÁFICO -->
       <div class="card">
-        <header class="card-header">
-          <h3>Ganhos x Despesas (por dia)</h3>
-        </header>
+        <header class="card-header"><h3>Ganhos x Despesas (por dia)</h3></header>
         <canvas id="chartCanvas" height="220"></canvas>
         <div class="hint">Gráfico sem bibliotecas externas.</div>
       </div>
@@ -88,9 +103,7 @@
     </div>
     <div class="grid-2 responsive">
       <div class="card">
-        <header class="card-header">
-          <h3>Adicionar ganho</h3>
-        </header>
+        <header class="card-header"><h3>Adicionar ganho</h3></header>
         <form id="earnForm" class="form grid-3">
           <label><span>Data</span><input type="date" id="earnDate" required /></label>
           <label><span>Plataforma</span>
@@ -182,20 +195,13 @@
         <div id="goalsLive" class="padding"></div>
       </div>
     </div>
-
-    <!-- CONFIGURAÇÕES (opcional, se quiser deixar no final) -->
-    <div class="card">
-      <header class="card-header"><h3>Configurações</h3></header>
-      <!-- conteúdo da aba config, se desejar -->
-    </div>
-
   </main>
 
+  <!-- FOOTER -->
   <footer class="app-footer">
     <span>© <span id="year"></span> MotoTrap — Controle de ganhos para motoristas de app</span>
   </footer>
 
-  <script src="app.js"></script>
-  <!-- se o JS do timer/jornada estiver separado, inclua após o app.js -->
+  app.js</script>
 </body>
 </html>
