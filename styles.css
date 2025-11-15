@@ -1,371 +1,145 @@
-/* =========================
-   BASE & VARIÁVEIS
-========================= */
-:root {
-  /* Cores */
-  --bg-start: #23243b;
-  --bg-end: #444763;
-  --panel: rgba(19, 20, 35, 0.90);
-  --panel-soft: rgba(11, 14, 24, 0.93);
-  --border: #302F48;
-  --border-soft: #29283d;
+/* =========
+   FORMULÁRIOS (aplica em todos os forms com class="form")
+   ========= */
 
-  --text: #e6e9f0;
-  --text-muted: #c6cdee;
-  --text-subtle: #9a9edd;
-  --focus: #473ad0;
-
-  --accent: #ef476f;
-  --accent-hover: #d8355e;
-  --primary: #3129b6;
-  --primary-hover: #473ad0;
-  --highlight: #ffe49e;
-
-  /* Tipografia e espaçamentos */
-  --radius-xs: 6px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 18px;
-
-  /* Escala de espaçamento (t-shirt sizes) */
-  --space-2: 0.125rem;  /* 2px */
-  --space-4: 0.25rem;   /* 4px  */
-  --space-6: 0.375rem;  /* 6px  */
-  --space-8: 0.5rem;    /* 8px  */
-  --space-10: 0.625rem; /* 10px */
-  --space-12: 0.75rem;  /* 12px */
-  --space-14: 0.875rem; /* 14px */
-  --space-16: 1rem;     /* 16px */
-  --space-20: 1.25rem;  /* 20px */
-  --space-24: 1.5rem;   /* 24px */
-  --space-28: 1.75rem;  /* 28px */
-  --space-32: 2rem;     /* 32px */
-
-  /* Larguras / container */
-  --container-max: 1200px;
-}
-
-/* Tipografia fluida e base */
-html {
-  /* Tipografia fluida entre 16px e 18px */
-  font-size: clamp(15px, 1.2vw + 14px, 18px);
-  scroll-behavior: smooth;
-}
-body {
-  background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
-  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
-  color: var(--text);
-  line-height: 1.6;       /* MAIS respiro entre linhas */
-  padding: var(--space-16);
-}
-
-/* Container central para limitar largura e dar respiro lateral */
-.container {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: 0 var(--space-16);
-}
-
-/* =========================
-   HEADER
-========================= */
-header.app-header {
-  background: #232236;
-  box-shadow: 0 2px 8px rgba(30, 30, 50, 0.2);
-  padding: var(--space-20) 0;
-  margin-bottom: var(--space-24); /* separa do conteúdo */
-}
-.brand {
-  display: flex;
-  align-items: center;
-  gap: var(--space-12); /* mais espaço entre logo e título */
-}
-.brand img {
-  height: 38px;         /* ligeiramente maior para legibilidade */
-  width: auto;
-  max-width: 120px;
-}
-.brand h1 {
-  font-weight: 700;
-  font-size: 1.7em;
-  color: #eff2fb;
-  letter-spacing: 2px;
-  margin: 0;
-}
-
-.app-header .btn {
-  background: var(--accent);
-  color: #fff;
-  border-radius: var(--radius-sm);
-  padding: 0.55em 1.25em; /* um pouco maior */
-  border: none;
-  font-weight: 700;
-  box-shadow: 0 2px 8px rgba(230,71,111,.12);
-  transition: background .2s, transform .12s ease;
-}
-.app-header .btn:hover {
-  background: var(--accent-hover);
-  transform: translateY(-1px);
-}
-.app-header .btn:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--accent), white 25%);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
-}
-
-/* =========================
-   CARDS & ESTATÍSTICAS
-========================= */
-.card {
-  background: var(--panel);
-  border-radius: var(--radius-xl);
-  box-shadow: 0 2px 12px rgba(74, 29, 101, 0.16);
-  padding: var(--space-24) var(--space-28); /* MAIS espaço interno */
-  margin-bottom: var(--space-24);
-  border: 1px solid var(--border);
-  transition: transform .22s ease, box-shadow .22s ease;
-}
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(74, 29, 101, 0.25);
-}
-.card-header h3 {
-  font-size: 1.2em;
-  font-weight: 600;
-  margin-bottom: var(--space-14);
-  color: var(--text-subtle);
-}
-
-/* Grid responsivo para estatísticas */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(160px, 1fr));
-  gap: var(--space-16); /* AUMENTA o espaço entre cartões */
-}
-@media (max-width: 1100px) {
-  .stats { grid-template-columns: repeat(3, minmax(160px, 1fr)); }
-}
-@media (max-width: 800px) {
-  .stats { grid-template-columns: repeat(2, minmax(160px, 1fr)); }
-}
-@media (max-width: 520px) {
-  .stats { grid-template-columns: 1fr; }
-}
-
-.stat {
-  background: linear-gradient(135deg, #23243b 60%, #3c3865 100%);
-  padding: var(--space-20) var(--space-24);
-  border-radius: var(--radius-lg);
-  min-height: 96px; /* dá mais respiro vertical */
-  box-shadow: 0 1px 6px rgba(27, 19, 50, 0.12);
+/* Cada label vira uma coluna flex com respiro entre rótulo e campo */
+.form label {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  text-align: left; /* melhora leitura */
-}
-.stat .label {
-  color: #ccc2f8;
-  font-size: 0.95em;
-  font-weight: 500;
-  margin-bottom: var(--space-6);
-}
-.stat .value {
-  font-size: clamp(1.2em, 1.2vw + 1em, 1.7em);
-  color: var(--highlight);
-  font-weight: 800;
+  gap: 8px;                /* espaço entre <span> e o input/select */
 }
 
-/* =========================
-   TABELA
-========================= */
+/* Espaço entre um campo e o próximo (além do gap da grid) */
+.form label:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+/* Inputs/Selects/Textareas confortáveis para digitar */
+.form input,
+.form select,
+.form textarea {
+  padding: 12px 14px;     /* MAIS respiro dentro do campo */
+  min-height: 44px;       /* alvo de toque acessível */
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+/* Em telas pequenas, mantém boa altura */
+@media (max-width: 480px) {
+  .form input,
+  .form select,
+  .form textarea {
+    min-height: 46px;
+    padding: 13px 15px;
+  }
+}
+
+/* Títulos (os <span> dentro dos labels) com mais legibilidade */
+.form label > span {
+  color: #cfd3ff;
+  font-weight: 500;
+  letter-spacing: .2px;
+}
+
+/* Gaps entre colunas/linhas das grades dos formulários */
+.form.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  column-gap: 18px;        /* espaço entre colunas */
+  row-gap: 14px;           /* espaço entre linhas */
+}
+
+/* Quebra responsiva das colunas */
+@media (max-width: 1000px) {
+  .form.grid-3 {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+}
+@media (max-width: 620px) {
+  .form.grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Botões "full" não ficam colados nos campos anteriores */
+.form .btn.full {
+  width: 100%;
+  margin-top: 8px;
+  min-height: 44px;
+  padding: 12px 18px;
+  font-weight: 700;
+}
+
+/* =========
+   CARDS/SEÇÕES (separa os blocos e o título do conteúdo)
+   ========= */
+.card {
+  padding: 24px 28px;      /* mais respiro interno do card */
+  margin-bottom: 24px;     /* espaço entre um card e outro */
+}
+.card-header {
+  margin-bottom: 12px;     /* espaço entre o título e o conteúdo do card */
+}
+.card-header h3 {
+  margin: 0 0 6px 0;
+}
+
+/* =========
+   TABELAS (separa do cabeçalho e dá respiro nas células)
+   ========= */
 .table {
   width: 100%;
-  border-spacing: 0;
-  border-radius: var(--radius-md);
-  background: var(--panel-soft);
-  box-shadow: 0 1px 8px rgba(30, 28, 54, 0.13);
-  overflow: hidden; /* para bordas arredondadas nos cabeçalhos */
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
 }
-.table th, .table td {
-  padding: var(--space-14) var(--space-12); /* MAIS espaço nas células */
-  border-bottom: 1px solid var(--border-soft);
-  vertical-align: middle;
+.table th,
+.table td {
+  padding: 14px 12px;      /* espaço dentro das células */
+  border-bottom: 1px solid #29283d;
 }
-.table th {
-  background: rgba(255,255,255,0.02);
-  color: var(--text-muted);
-  font-weight: 600;
-  font-size: 1em;
-  text-align: left;
-}
-.table tr:last-child td { border-bottom: none; }
+.table tr:last-child td { border-bottom: 0; }
 
-/* Inputs dentro da tabela mais confortáveis */
-.table input[type="number"],
-.table input[type="text"] {
-  background: #21213c;
-  color: var(--highlight);
-  border: 1px solid #373763;
-  border-radius: var(--radius-xs);
-  padding: var(--space-6) var(--space-10);
-  min-width: 6.5rem;
+/* Se quiser, separa visualmente o título da tabela */
+#workTable, #earnTable, #expTable { margin-top: 8px; }
+
+/* =========
+   BLOCO "Jornada do dia": separa timer e botões
+   ========= */
+#workTimerSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;               /* separa timer dos botões */
 }
-.table input:focus {
-  outline: none;
-  border-color: var(--focus);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus), transparent 65%);
+.btn.big {
+  min-height: 44px;
+  padding: 10px 18px;
 }
 
-/* Quebra de tabela em mobile: scroll horizontal elegante */
-.table-wrap {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  border-radius: var(--radius-md);
-}
-.table-wrap::-webkit-scrollbar {
-  height: 10px;
-}
-.table-wrap::-webkit-scrollbar-thumb {
-  background: #393a57;
-  border-radius: 999px;
-}
-
-/* =========================
-   GRÁFICO
-========================= */
-#chartCanvas {
-  background: rgba(1,4,21,.92);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 1px 10px rgba(30, 28, 54, 0.16);
-  margin-top: var(--space-20);
-  padding: var(--space-12); /* espaço interno ao redor do canvas */
-  width: 100%;
-  max-height: 420px;
-}
-
-/* =========================
-   TABS / SUBTABS
-========================= */
-.subtab {
-  background: #2b3250;
-  color: var(--text-muted);
-  border-radius: var(--radius-sm);
-  padding: var(--space-8) var(--space-20);
-  margin-right: var(--space-10);
-  border: none;
-  font-weight: 600;
-  font-size: 1em;
-  transition: background .18s, color .18s, transform .12s ease;
-  cursor: pointer;
-}
-.subtab.active, .subtab:hover {
-  background: #3e405a;
-  color: var(--highlight);
-  transform: translateY(-1px);
-}
-.subtab:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--focus), white 20%);
-  outline-offset: 2px;
-}
-
-/* =========================
-   FORMULÁRIOS / INPUTS
-========================= */
-form .btn {
-  padding: var(--space-12) var(--space-20);
-  border-radius: var(--radius-sm);
-  font-size: 1em;
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  font-weight: 800;
-  transition: background .14s, transform .12s ease;
-  box-shadow: 0 1px 7px rgba(44,52,140,0.12);
-  min-height: 44px; /* alvo de toque acessível */
-}
-form .btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
-form .btn:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--primary), white 20%);
-  outline-offset: 2px;
-}
-form label {
-  display: inline-block;
-  margin-bottom: var(--space-8);
-  color: #bebcff;
-}
-input, select, textarea {
-  font-size: 1em;
-  border-radius: var(--radius-sm);
-  padding: var(--space-10) var(--space-12); /* MAIS conforto */
-  border: 1px solid var(--border-soft);
-  background: #23243b;
-  color: #eff2fb;
-  transition: border-color .19s, box-shadow .19s;
-  min-height: 42px; /* alvo de toque */
-  width: 100%;
-  box-sizing: border-box;
-}
-input:focus, select:focus, textarea:focus {
-  border-color: var(--focus);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus), transparent 65%);
-}
-
-/* Grupos de formulário com mais respiro */
-.form-row {
+/* =========
+   GRIDS GERAIS (dão respiro entre cartões)
+   ========= */
+.grid-1, .grid-2, .grid-3 {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: var(--space-16);
-  margin-bottom: var(--space-16);
+  gap: 16px;               /* espaço entre itens da grade */
 }
-.form-col-6 { grid-column: span 6; }
-.form-col-4 { grid-column: span 4; }
-.form-col-3 { grid-column: span 3; }
-.form-col-12 { grid-column: span 12; }
-
-@media (max-width: 900px) {
-  .form-col-6, .form-col-4, .form-col-3 { grid-column: span 12; }
+.grid-2 {
+  grid-template-columns: 1fr 1fr;
 }
-
-/* =========================
-   FOOTER
-========================= */
-.app-footer {
-  text-align: center;
-  color: #75739e;
-  padding: var(--space-20) 0 var(--space-12) 0;
-  margin-top: var(--space-28);
-  font-size: 1em;
+.grid-2.responsive {
+  grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 1000px) {
+  .grid-2,
+  .grid-2.responsive { grid-template-columns: 1fr; }
 }
 
-/* =========================
-   RESPONSIVIDADE GERAL
-========================= */
-@media (max-width: 1100px) {
-  .card { padding: var(--space-20) var(--space-24); }
+/* =========
+   SUBTABS (afasta das seções de ganhos)
+   ========= */
+.subtabs {
+  display: flex;
+  gap: 10px;
+  margin: 8px 0 16px;      /* respiro acima/abaixo das subtabs */
 }
-@media (max-width: 800px) {
-  body { padding: var(--space-12); }
-  header.app-header { padding: var(--space-16) 0; }
-  .card { padding: var(--space-16) var(--space-20); }
-  .brand img { height: 34px; }
-}
-@media (max-width: 500px) {
-  .brand h1 { font-size: 1.4em; letter-spacing: 1px; }
-  .subtab { padding: var(--space-8) var(--space-14); margin-right: var(--space-8); }
-  .table th, .table td { padding: var(--space-10) var(--space-8); }
-}
-
-/* =========================
-   UTILITÁRIOS DE ESPAÇAMENTO
-========================= */
-/* Use quando quiser rapidamente aumentar espaço entre blocos */
-.mt-16 { margin-top: var(--space-16); }
-.mt-24 { margin-top: var(--space-24); }
-.mb-16 { margin-bottom: var(--space-16); }
-.mb-24 { margin-bottom: var(--space-24); }
-.gap-16 { gap: var(--space-16); }
-.gap-24 { gap: var(--space-24); }
-.p-16 { padding: var(--space-16); }
-.p-24 { padding: var(--space-24); }
