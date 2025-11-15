@@ -75,7 +75,7 @@ function stopJornada() {
     date: new Date(started).toISOString().slice(0,10),
     km: 0,
     hours: elapsedFormatted,
-    totalMinutes: elapsedMinutes // salva minutos para cálculo da média
+    totalMinutes: elapsedMinutes
   });
   localStorage.setItem('mototrap_work_history', JSON.stringify(workHistory));
 
@@ -132,7 +132,6 @@ function updateWorkTable() {
     tbody.appendChild(tr);
   });
 
-  // Calcula média de horas e minutos
   let avgHours = "0h 0m";
   if (workHistory.length) {
     const avgMinutes = Math.floor(totalMinutes / workHistory.length);
@@ -161,6 +160,59 @@ window.removeWork = function(idx) {
   localStorage.setItem('mototrap_work_history', JSON.stringify(workHistory));
   updateWorkTable();
 };
+
+// ===== GRÁFICO DE GANHOS X DESPESAS =====
+function updateEarnExpenseChart() {
+  const canvas = document.getElementById('chartCanvas');
+  if (!canvas) return;
+
+  canvas.width = canvas.offsetWidth; // Ajusta largura para responsividade
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  let earns = JSON.parse(localStorage.getItem('mototrap_earns') || '[]');
+  let exps  = JSON.parse(localStorage.getItem('mototrap_exps') || '[]');
+
+  let days = {};
+  earns.forEach(e => {
+    days[e.date] = days[e.date] || {gain: 0, exp: 0};
+    days[e.date].gain += Number(e.amount || 0);
+  });
+  exps.forEach(e => {
+    days[e.date] = days[e.date] || {gain: 0, exp: 0};
+    days[e.date].exp += Number(e.amount || 0);
+  });
+
+  const dates = Object.keys(days).sort();
+  const w = canvas.width, h = canvas.height;
+  const barGroupWidth = Math.max(20, Math.floor((w - 40) / (dates.length || 1)));
+  const maxVal = dates.length ? Math.max(...dates.map(d => Math.max(days[d].gain, days[d].exp))) : 1;
+
+  ctx.font = "12px Arial";
+  ctx.textAlign = "center";
+
+  dates.forEach((date, i) => {
+    const x = 30 + i * barGroupWidth;
+    const gainHeight = (days[date].gain / maxVal) * (h - 40);
+    ctx.fillStyle = "#2986cc";
+    ctx.fillRect(x, h - gainHeight - 20, (barGroupWidth / 2) - 2, gainHeight);
+    ctx.fillText("R$" + days[date].gain.toFixed(2), x + (barGroupWidth / 4), h - gainHeight - 24);
+
+    const expHeight = (days[date].exp / maxVal) * (h - 40);
+    ctx.fillStyle = "#d9534f";
+    ctx.fillRect(x + (barGroupWidth / 2), h - expHeight - 20, (barGroupWidth / 2) - 2, expHeight);
+    ctx.fillText("R$" + days[date].exp.toFixed(2), x + (3 * barGroupWidth / 4), h - expHeight - 24);
+
+    ctx.fillStyle = "#ccc";
+    ctx.fillText(date, x + barGroupWidth / 2, h - 5);
+  });
+
+  ctx.textAlign = "right";
+  ctx.fillStyle = "#fff";
+  ctx.fillText("Valores diários em R$", w - 10, 14);
+}
+
+window.addEventListener('resize', updateEarnExpenseChart);
 
 // ===== GANHOS =====
 function updateEarnTable() {
@@ -301,3 +353,4 @@ function updateRodapeAno() {
   if (yEl) yEl.textContent = new Date().getFullYear();
 }
 
+onReady(updateRodapeAno);
