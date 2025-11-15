@@ -25,7 +25,7 @@
     </section>
 
     <section id="tab-dashboard" class="tab-content visible">
-      <!-- Resumo rápido e gráfico -->
+      <!-- Resumo rápido -->
       <div class="grid-2 responsive">
         <div class="card">
           <header class="card-header">
@@ -75,7 +75,6 @@
         <button data-gain="uber" class="subtab active">Uber</button>
         <button data-gain="ninetynine" class="subtab">99</button>
       </div>
-
       <div class="grid-2 responsive">
         <div class="card">
           <header class="card-header">
@@ -157,7 +156,7 @@
           </form>
         </div>
         <div class="card">
-          <header class="card-header"><h3>Registros</h3></header>
+          <header class="card-header"><h3>Registros de trabalho</h3></header>
           <table class="table" id="workTable">
             <thead><tr><th>Data</th><th>KM</th><th>Horas</th><th>Ações</th></tr></thead>
             <tbody></tbody>
@@ -188,11 +187,22 @@
           <div id="goalsLive" class="padding"></div>
         </div>
       </div>
+      
+      <!-- Contador de jornada trabalhada com botão iniciar/parar -->
+      <div class="grid-1">
+        <div class="card">
+          <header class="card-header"><h3>Jornada do dia</h3></header>
+          <div id="workTimerSection">
+            <div id="workTimerDisplay" style="font-size:2em;text-align:center;">00:00:00</div>
+            <button id="btnStartWork" class="btn primary big">Iniciar jornada</button>
+            <button id="btnStopWork" class="btn danger big" style="display:none;">Encerrar jornada</button>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- Aba de Config continua normalmente -->
     <section id="tab-config" class="tab-content">
-      <!-- Conteúdo da aba config -->
+      <!-- conteúdo da aba config permanece igual -->
     </section>
   </main>
 
@@ -201,5 +211,87 @@
   </footer>
 
   <script src="app.js"></script>
+  <!-- Adicione este bloco caso queira JS separado, senão insira no app.js -->
+  <script>
+    // Funções auxiliar para formatar tempo
+    function formatTimer(ms) {
+      const totalSec = Math.floor(ms/1000);
+      const h = Math.floor(totalSec/3600).toString().padStart(2,'0');
+      const m = Math.floor((totalSec%3600)/60).toString().padStart(2,'0');
+      const s = (totalSec%60).toString().padStart(2,'0');
+      return `${h}:${m}:${s}`;
+    }
+
+    // Elementos do timer
+    const timerDisplay = document.getElementById('workTimerDisplay');
+    const btnStart = document.getElementById('btnStartWork');
+    const btnStop = document.getElementById('btnStopWork');
+
+    // LocalStorage chaves
+    const WORK_TIMER_STARTED = 'mototrap_work_started';
+
+    let timerInterval = null;
+
+    function updateTimer() {
+      const started = localStorage.getItem(WORK_TIMER_STARTED);
+      if (started) {
+        const elapsed = Date.now() - Number(started);
+        timerDisplay.textContent = formatTimer(elapsed);
+      } else {
+        timerDisplay.textContent = "00:00:00";
+      }
+    }
+
+    function checkTimerOnLoad() {
+      if (localStorage.getItem(WORK_TIMER_STARTED)) {
+        btnStart.style.display = 'none';
+        btnStop.style.display = '';
+        timerInterval = setInterval(updateTimer, 1000);
+        updateTimer();
+      } else {
+        btnStart.style.display = '';
+        btnStop.style.display = 'none';
+        timerDisplay.textContent = "00:00:00";
+      }
+    }
+    window.addEventListener('DOMContentLoaded', checkTimerOnLoad);
+
+    // Iniciar trabalho
+    btnStart.addEventListener('click', () => {
+      localStorage.setItem(WORK_TIMER_STARTED, Date.now());
+      btnStart.style.display = 'none';
+      btnStop.style.display = '';
+      updateTimer();
+      timerInterval = setInterval(updateTimer, 1000);
+    });
+
+    // Parar trabalho e salvar registro
+    btnStop.addEventListener('click', () => {
+      const started = Number(localStorage.getItem(WORK_TIMER_STARTED));
+      if (!started) return;
+
+      const ended = Date.now();
+      const elapsedMs = ended - started;
+      const elapsedHours = Math.round((elapsedMs/360000)/10); // 1 casa decimal
+
+      // salva registro (adicione ao histórico de horas trabalhadas)
+      let workHistory = JSON.parse(localStorage.getItem('mototrap_work_history') || '[]');
+      workHistory.push({
+        date: new Date(started).toISOString().slice(0,10),
+        km: 0,
+        hours: elapsedHours
+      });
+      localStorage.setItem('mototrap_work_history', JSON.stringify(workHistory));
+
+      // reseta timer
+      localStorage.removeItem(WORK_TIMER_STARTED);
+      btnStart.style.display = '';
+      btnStop.style.display = 'none';
+      clearInterval(timerInterval);
+      timerDisplay.textContent = "00:00:00";
+      // você pode atualizar o histórico se quiser!
+      alert('Jornada encerrada e registrado no histórico!');
+    });
+  </script>
 </body>
 </html>
