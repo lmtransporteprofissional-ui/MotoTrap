@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MotoTrap — Login</title>
-  styles.css
+  <link rel="stylesheet" href="styles.css">
   <meta name="color-scheme" content="dark light">
 </head>
 <body>
@@ -43,20 +43,20 @@
 
         <div class="auth-actions">
           <label style="display:flex; align-items:center; gap:8px;">
-            <input type="checkbox" id="remember"> Lembrar de mim
+            <input type="checkbox" id="remember" aria-label="Lembrar de mim"> Lembrar de mim
           </label>
-          <button class="btn" type="submit">Entrar</button>
+          <button class="btn primary" type="submit" aria-label="Entrar no sistema">Entrar</button>
         </div>
 
         <div class="error" id="formError" role="alert" aria-live="polite"></div>
       </form>
 
       <div class="auth-footer">
-        #Criar usuário de demonstração</a>
+        <a href="#" id="createDemo">Criar usuário de demonstração</a>
       </div>
     </div>
   </div>
 
-  auth.js</script>
+  <script src="auth.js"></script>
 </body>
 </html>
