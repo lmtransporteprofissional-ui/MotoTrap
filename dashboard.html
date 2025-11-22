@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MotoTrap — Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <meta name="color-scheme" content="dark light">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <img src="Logo.png" alt="MotoTrap Logo">
+      <h1>MotoTrap</h1>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Timer da Jornada -->
+    <div class="card">
+      <div class="card-header">
+        <h3>⏱️ Jornada de Trabalho</h3>
+      </div>
+      <div style="text-align:center; margin: 20px 0;">
+        <div style="font-size: 2.5em; font-weight: bold; color: var(--ink-1); margin-bottom: 20px;" id="workTimerDisplay">00:00:00</div>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <button id="btnStartWork" class="btn danger" onclick="startJornada()" aria-label="Iniciar jornada de trabalho">🚀 Iniciar Jornada</button>
+          <button id="btnStopWork" class="btn danger" onclick="stopJornada()" style="display:none;" aria-label="Parar jornada de trabalho">🛑 Parar Jornada</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estatísticas -->
+    <div class="card">
+      <div class="card-header">
+        <h3>📊 Resumo</h3>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <span class="label">Média KM/dia</span>
+          <span class="value" id="avgKm">0</span>
+        </div>
+        <div class="stat">
+          <span class="label">Média Horas/dia</span>
+          <span class="value" id="avgHours">0</span>
+        </div>
+        <div class="stat">
+          <span class="label">Total Ganhos</span>
+          <span class="value" id="totalGain">R$ 0</span>
+        </div>
+        <div class="stat">
+          <span class="label">Total Despesas</span>
+          <span class="value" id="totalExp">R$ 0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabela de Trabalho -->
+    <div class="card">
+      <div class="card-header">
+        <h3>📅 Histórico de Trabalho</h3>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="table" id="workTable">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>KM Rodados</th>
+              <th>Horas Trab.</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2024-01-15</td>
+              <td><input type="number" min="0" step="0.1" value="50" aria-label="Quilômetros rodados"></td>
+              <td>8.5</td>
+              <td><button class="btn danger small" aria-label="Excluir registro">Excluir</button></td>
+            </tr>
+            <tr>
+              <td>2024-01-14</td>
+              <td><input type="number" min="0" step="0.1" value="45" aria-label="Quilômetros rodados"></td>
+              <td>7.2</td>
+              <td><button class="btn danger small" aria-label="Excluir registro">Excluir</button></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4" style="text-align: center; padding: 16px;">
+                <button class="btn" aria-label="Adicionar novo registro">➕ Adicionar Registro</button>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Formulário de exemplo -->
+    <div class="card">
+      <div class="card-header">
+        <h3>💰 Adicionar Ganho/Despesa</h3>
+      </div>
+      <form>
+        <label>
+          Data
+          <input type="date" value="2024-01-15" aria-label="Data do registro">
+        </label>
+        <label>
+          Tipo
+          <select aria-label="Tipo de transação">
+            <option>Ganho</option>
+            <option>Despesa</option>
+          </select>
+        </label>
+        <label>
+          Valor
+          <input type="number" placeholder="0.00" step="0.01" min="0" aria-label="Valor em reais">
+        </label>
+        <button type="submit" class="btn" style="align-self: flex-end;" aria-label="Salvar registro">Salvar</button>
+      </form>
+    </div>
+
+    <!-- Tabs de exemplo -->
+    <div class="card">
+      <div class="card-header">
+        <h3>📈 Visualizações</h3>
+      </div>
+      <div style="margin-bottom: 16px;">
+        <button class="subtab active" aria-label="Ver ganhos">Ganhos</button>
+        <button class="subtab" aria-label="Ver despesas">Despesas</button>
+        <button class="subtab" aria-label="Ver relatório">Relatório</button>
+      </div>
+      <canvas id="chartCanvas" width="800" height="400" aria-label="Gráfico de ganhos e despesas"></canvas>
+    </div>
+
+    <!-- Botões diversos -->
+    <div class="card">
+      <div class="card-header">
+        <h3>🎨 Galeria de Botões</h3>
+      </div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+        <button class="btn" aria-label="Botão secundário padrão">Botão Padrão</button>
+        <button class="btn primary" aria-label="Botão primário">Botão Primário</button>
+        <button class="btn danger" aria-label="Botão de perigo">Botão Perigo</button>
+        <button class="btn ghost" aria-label="Botão fantasma">Botão Ghost</button>
+        <button class="btn small" aria-label="Botão pequeno">Pequeno</button>
+        <button class="btn danger small" aria-label="Botão pequeno de perigo">Pequeno Perigo</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>© 2024 MotoTrap — Sistema de Gestão para Motoboys</p>
+    <button class="btn ghost" id="btnLogout" aria-label="Sair do sistema">Sair</button>
+  </footer>
+
+  <script src="app.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>
