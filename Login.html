@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MotoTrap — Login</title>
+  styles.css
+  <meta name="color-scheme" content="dark light">
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-card" role="form" aria-labelledby="loginTitle">
+      <div class="auth-brand">
+        logo.svg
+        <h1 class="auth-title" id="loginTitle">Entrar no MotoTrap</h1>
+      </div>
+
+      <p class="helper">
+        Use suas credenciais para acessar o painel. No primeiro acesso,
+        um usuário de demonstração é criado automaticamente.
+      </p>
+
+      <form id="loginForm" novalidate>
+        <div class="input-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email"
+                 placeholder="seu@email.com"
+                 autocomplete="username" required>
+          <div class="error" id="emailError"></div>
+        </div>
+
+        <div class="input-group">
+          <label for="password">Senha</label>
+          <div class="input-with-icon">
+            <input type="password" id="password" name="password"
+                   placeholder="••••••" minlength="6"
+                   autocomplete="current-password" required>
+            <button type="button" class="toggle" id="togglePassword"
+                    aria-label="Exibir/ocultar senha">👁️</button>
+          </div>
+          <div class="error" id="passwordError"></div>
+        </div>
+
+        <div class="auth-actions">
+          <label style="display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" id="remember"> Lembrar de mim
+          </label>
+          <button class="btn" type="submit">Entrar</button>
+        </div>
+
+        <div class="error" id="formError" role="alert" aria-live="polite"></div>
+      </form>
+
+      <div class="auth-footer">
+        #Criar usuário de demonstração</a>
+      </div>
+    </div>
+  </div>
+
+  auth.js</script>
+</body>
+</html>
